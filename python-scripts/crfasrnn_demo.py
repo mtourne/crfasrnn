@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-This package contains code for the "CRF-RNN" semantic image segmentation method, published in the 
-ICCV 2015 paper Conditional Random Fields as Recurrent Neural Networks. Our software is built on 
+This package contains code for the "CRF-RNN" semantic image segmentation method, published in the
+ICCV 2015 paper Conditional Random Fields as Recurrent Neural Networks. Our software is built on
 top of the Caffe deep learning library.
- 
+
 Contact:
 Shuai Zheng (szheng@robots.ox.ac.uk), Sadeep Jayasumana (sadeep@robots.ox.ac.uk), Bernardino Romera-Paredes (bernard@robots.ox.ac.uk)
 
-Supervisor: 
+Supervisor:
 Philip Torr (philip.torr@eng.ox.ac.uk)
 
 For more information about CRF-RNN, please vist the project website http://crfasrnn.torr.vision.
@@ -27,15 +27,23 @@ from PIL import Image as PILImage
 import cStringIO as StringIO
 import caffe
 import matplotlib.pyplot as plt
+import argparse
 
-
-MODEL_FILE = 'TVG_CRFRNN_new_deploy.prototxt'
+MODEL_FILE = 'TVG_CRFRNN_new_deploy2.prototxt'
 PRETRAINED = 'TVG_CRFRNN_COCO_VOC.caffemodel'
 IMAGE_FILE = 'input.jpg'
 
+parser = argparse.ArgumentParser(description='Input image demo')
+parser.add_argument('--gpu', action='store_true', help='use gpu')
 
-#caffe.set_mode_gpu()
-net = caffe.Segmenter(MODEL_FILE, PRETRAINED)
+args = parser.parse_args()
+
+if args.gpu:
+    print("Using GPU!")
+    caffe.set_mode_gpu()
+    net = caffe.Segmenter(MODEL_FILE, PRETRAINED, gpu=True)
+else:
+    net = caffe.Segmenter(MODEL_FILE, PRETRAINED, gpu=False)
 input_image = 255 * caffe.io.load_image(IMAGE_FILE)
 
 
